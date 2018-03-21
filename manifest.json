@@ -1,0 +1,24 @@
+{
+  "manifest_version": 2,
+
+  "name": "Senior Project",
+  "description": "Hello",
+  "version": "1.0",
+
+  "browser_action": {
+    "default_icon": "get_started48.png",
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "scripts": ["bundle.js"]
+  },
+  "icons": {
+    "64" : "get_started48.png"
+  },
+    "content_scripts" : [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["myScript.js"]
+    }
+  ]
+}
