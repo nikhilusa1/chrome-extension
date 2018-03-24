@@ -7,24 +7,18 @@
 </head>
 <body>
 	<div class="container" id="main_container">
-		<br>
 		<div class="jumbotron">
 			<div class-"navbar-outer">
-			<br>
-
-			<br>
 			<div class="ng-cloak">
 				<div ng-controller="PopupListController" id="summary_container">
+					<div id="alt_smmry_container">
+						<input type="text" class="form-control" id="article_title" placeholder="Enter Number"><br>
+					</div>
 					<ol id="list">
 						<li id="sentence" ng-repeat="sentence in sentences">
 							{{sentence}}
 						</li>
 					</ol>
-				</div>
-				<div id="alt_smmry_container">
-					<input type="text" class="form-control" id="article_title" placeholder="Article title"><br>
-					<textarea class="form-control" rows="20" id="pasted_text" type="text" placeholder="Article Text"></textarea><br>
-					<button class="btn btn-primary" id="text_submit">Summarize!</button>
 				</div>
 			</div>
 		</div>
