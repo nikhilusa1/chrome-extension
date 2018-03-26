@@ -2,17 +2,23 @@
 <html lang="en" ng-app="SummarizerExtension" ng-csp>
 <head>
 	<title>Summarizer</title>
-	<link rel="stylesheet" href="css/popup.css">
-	<link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
 <body>
 	<div class="container" id="main_container">
 		<div class="jumbotron">
 			<div class-"navbar-outer">
+			<div class "buttons">
+				<ul class "tabs">
+					<li><a href="popup.html">Home</a></li>
+					<li><a href="hashtag.html">#Hashtag Suggestions</a></li>
+					<li><a href="popup.html">Citations</a></li>
+				</ul>
+			</div>
+			<br></br>
 			<div class="ng-cloak">
 				<div ng-controller="PopupListController" id="summary_container">
 					<div id="alt_smmry_container">
-						<input type="text" class="form-control" id="article_title" placeholder="Enter Number"><br>
+						<input type="text" class="form-control" id="insert" placeholder="Enter Number of Sentences to be summarized"><br>
 					</div>
 					<ol id="list">
 						<li id="sentence" ng-repeat="sentence in sentences">
@@ -27,5 +33,6 @@
 	<script type="text/javascript" src="angular.min.js"></script>
 	<script type="text/javascript" src="angular-route.min.js"></script>
 	<script type="text/javascript" src="bundle.js"></script>
+</div>
 </body>
 </html>
