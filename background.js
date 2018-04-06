@@ -24,17 +24,34 @@ $( document ).ready(function() {
   });
 });
 
+$(document).ready(function () {
+  $(".nav li").removeClass("active");//this will remove the active class from
+                                     //previously active menu item
+  $('#home').addClass('active');
+});
+
 $('#insert').keypress(function(e){
   if(e.which == 13){
-    var num_sentences = $(this).val();
-    summarizeText(num_sentences);
-    $(this).val('');
+    $('#search').click();
   }
 });
 
-$('#inc_font').click(function(){
+$('#search').click(function(){
+  var num_sentences = $('#insert').val();
+  summarizeText(num_sentences);
+  $('#insert').val('');
+});
+
+$('#schmalz_font').click(function(){
   if(font_size_index != 4){
-    $('#summary_container').css('font-size', 'xx-large'/*font_sizes[font_size_index + 1]*/);
+    $('#summary_container').css('font-size', 'xx-large');
+    font_size_index = 4;
+  }
+});
+
+$('#int_font').click(function(){
+  if(font_size_index != 4){
+    $('#summary_container').css('font-size', font_sizes[font_size_index + 1]);
     font_size_index++;
   }
 });
@@ -73,6 +90,8 @@ myApp.controller("HashtagController", function ($scope) {
 var textapi;
 var URL;
 var tag_size = ['','','','','','','','','',''];
+var tag_size2 = ['','','','','','','','','',''];
+var flag = false;
 
 $( document ).ready(function() {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
@@ -89,6 +108,17 @@ $( document ).ready(function() {
   });
 });
 
+$(document).ready(function () {
+  $(".nav li").removeClass("active");//this will remove the active class from
+                                     //previously active menu item
+  $('#tag').addClass('active');
+});
+
+$('#add_tag').click(function(){
+  flag = true;
+  Hashtag(textapi);
+});
+
 function Hashtag(textapi){
   textapi.hashtags({
     url: URL
@@ -101,6 +131,12 @@ function Hashtag(textapi){
           tag_size[i] = response.hashtags[i];
         }
         $scope.hashtags = tag_size;
+        if(flag == true){
+          for(var i = 0; i < tag_size2.length; i++){
+            tag_size2[i] = response.hashtags[i+10];
+          }
+          $scope.hashtags2 = tag_size2;
+        }
         $scope.$apply();
       }
     });
