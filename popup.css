@@ -16,9 +16,12 @@
 .navbar {
   margin-left: 15px;
   margin-right: 15px;
-  margin-top: 5px;
   padding: 20px;
   background-color: #FDF5E6;
+}
+
+#tags{
+  -webkit-column-count: 3;
 }
 
 [ng\:cloak], [ng-cloak], .ng-cloak {
