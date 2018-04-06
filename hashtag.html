@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="Hashtag Suggestion" ng-csp>
+<html lang="en" ng-app="HashtagSuggestion" ng-csp>
 <head>
 	<title>Hashtag</title>
+	<link rel="stylesheet" type="text/css" href="popup.css">
 </head>
 <body>
 	<div class="container" id="main_container">
@@ -15,10 +16,10 @@
 					</ul>
 				</div>
 			<div class="ng-cloak">
-				<div ng-controller="PopupListController" id="summary_container">
+				<div ng-controller="HashtagController" id="hashtag_container">
 					<ul id="list">
-						<li id="sentence" ng-repeat="sentence in sentences">
-							{{sentence}}
+						<li id="hashtag" ng-repeat="hashtag in hashtags">
+							{{hashtag}}
 						</li>
 					</ul>
 				</div>
