@@ -73,12 +73,12 @@ function summarizeText(val){
         chrome.tabs.sendMessage(tabs[0].id, {'text':response.sentences});
       });
         $scope.sentences = response.sentences;
+        $('.loader').hide();
         $scope.$apply();
       }
     });
   }
 });
-
 
 /****************************************************************
 HASHTAG STUFF DOWN BELOW!
