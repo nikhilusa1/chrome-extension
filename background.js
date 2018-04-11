@@ -8,6 +8,7 @@ var URL;
 var textapi;
 var font_size_index = 1;
 var font_sizes = ['small', 'medium', 'large', 'x-large', 'xx-large'];
+var num = 3;
 
 $( document ).ready(function() {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
@@ -18,7 +19,6 @@ $( document ).ready(function() {
           application_id: APPLICATION_ID,
           application_key: APPLICATION_KEY
       });
-      var num = 3;
       summarizeText(num);
     });
   });
@@ -142,6 +142,68 @@ function Hashtag(textapi){
     });
   }
 });
+
+/****************************************************************
+KEYWORDS STUFF DOWN BELOW!
+****************************************************************/
+
+var myApp = angular.module('HashtagSuggestion', ['ngRoute']);
+myApp.controller("HashtagController", function ($scope) {
+
+var textapi;
+var URL;
+var flag = false;
+
+$( document ).ready(function() {
+  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+  chrome.tabs.sendMessage(tabs[0].id, {'command': 'getURL'}, function(response) {
+      URL = response;
+      var AYLIENTextAPI = require('aylien_textapi');
+      textapi = new AYLIENTextAPI({
+        application_id: APPLICATION_ID,
+        application_key: APPLICATION_KEY
+      });
+      //Add function calls below
+
+    });
+  });
+});
+
+$(document).ready(function () {
+  $(".nav li").removeClass("active");//this will remove the active class from
+                                     //previously active menu item
+  $('#tag').addClass('active');
+});
+
+$('#add_tag').click(function(){
+  flag = true;
+  Hashtag(textapi);
+});
+
+function Hashtag(textapi){
+  textapi.hashtags({
+    url: URL
+    },function(error, response) {
+      if (error === null) {
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {'text':response.hashtags});
+      });
+        for(var i = 0; i < tag_size.length; i++){
+          tag_size[i] = response.hashtags[i];
+        }
+        $scope.hashtags = tag_size;
+        if(flag == true){
+          for(var i = 0; i < tag_size2.length; i++){
+            tag_size2[i] = response.hashtags[i+10];
+          }
+          $scope.hashtags2 = tag_size2;
+        }
+        $scope.$apply();
+      }
+    });
+  }
+});
+
 
 /****************************************************************
 CITAION STUFF DOWN BELOW!
