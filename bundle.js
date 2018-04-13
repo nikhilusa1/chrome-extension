@@ -8391,6 +8391,7 @@ var URL;
 var textapi;
 var font_size_index = 1;
 var font_sizes = ['small', 'medium', 'large', 'x-large', 'xx-large'];
+var num = 3;
 
 $( document ).ready(function() {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
@@ -8401,8 +8402,17 @@ $( document ).ready(function() {
           application_id: APPLICATION_ID,
           application_key: APPLICATION_KEY
       });
-      var num = 3;
-      summarizeText(num);
+      chrome.storage.local.get(['key'], function(result){
+        if(result.key == parseInt(result.key, 10)){
+          num = result.key;
+          summarizeText(num);
+        }
+        else{
+          num = 3;
+          summarizeText(num);
+        }
+      });
+      //summarizeText(num);
     });
   });
 });
@@ -8421,6 +8431,7 @@ $('#insert').keypress(function(e){
 
 $('#search').click(function(){
   var num_sentences = $('#insert').val();
+  chrome.storage.local.set({'key': num_sentences}, function(){});
   summarizeText(num_sentences);
   $('#insert').val('');
 });
@@ -8463,7 +8474,6 @@ function summarizeText(val){
   }
 });
 
-
 /****************************************************************
 HASHTAG STUFF DOWN BELOW!
 ****************************************************************/
@@ -8500,6 +8510,7 @@ $(document).ready(function () {
 
 $('#add_tag').click(function(){
   flag = true;
+  $('#add_tag').prop('disabled',true);
   Hashtag(textapi);
 });
 
@@ -8521,6 +8532,7 @@ function Hashtag(textapi){
           }
           $scope.hashtags2 = tag_size2;
         }
+        $('.loader').hide();
         $scope.$apply();
       }
     });
@@ -8531,8 +8543,8 @@ function Hashtag(textapi){
 CITAION STUFF DOWN BELOW!
 ****************************************************************/
 
-var myApp = angular.module('CitaionCreation', ['ngRoute']);
-myApp.controller('CitaionController', function ($scope) {
+var myApp = angular.module('CitationCreation', ['ngRoute']);
+myApp.controller('CitationController', function ($scope) {
 
 var textapi;
 var URL;
@@ -8552,10 +8564,16 @@ $( document ).ready(function() {
   });
 });
 
-function Hashtag(textapi){
-  textapi.summarize({
+$(document).ready(function () {
+  $(".nav li").removeClass("active");//this will remove the active class from
+                                     //previously active menu item
+  $('#cite').addClass('active');
+});
+
+function citation(textapi){
+  textapi.extract({
     url: URL,
-    sentences_number: val
+    best_image: true
     },function(error, response) {
       if (error === null) {
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
@@ -8566,6 +8584,20 @@ function Hashtag(textapi){
       }
     });
   }
+});
+
+/****************************************************************
+HOWTO PAGE STUFF DOWN BELOW!
+****************************************************************/
+
+var myApp = angular.module('HowToPage', ['ngRoute']);
+myApp.controller('HowToController', function($scope){
+
+  $(document).ready(function () {
+    $(".nav li").removeClass("active");//this will remove the active class from
+                                       //previously active menu item
+    $('#how').addClass('active');
+  });
 });
 
 },{"aylien_textapi":40}]},{},[41]);
