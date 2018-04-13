@@ -19,7 +19,17 @@ $( document ).ready(function() {
           application_id: APPLICATION_ID,
           application_key: APPLICATION_KEY
       });
-      summarizeText(num);
+      chrome.storage.local.get(['key'], function(result){
+        if(result.key == parseInt(result.key, 10)){
+          num = result.key;
+          summarizeText(num);
+        }
+        else{
+          num = 3;
+          summarizeText(num);
+        }
+      });
+      //summarizeText(num);
     });
   });
 });
@@ -38,6 +48,7 @@ $('#insert').keypress(function(e){
 
 $('#search').click(function(){
   var num_sentences = $('#insert').val();
+  chrome.storage.local.set({'key': num_sentences}, function(){});
   summarizeText(num_sentences);
   $('#insert').val('');
 });
@@ -116,6 +127,7 @@ $(document).ready(function () {
 
 $('#add_tag').click(function(){
   flag = true;
+  $('#add_tag').prop('disabled',true);
   Hashtag(textapi);
 });
 
@@ -137,6 +149,7 @@ function Hashtag(textapi){
           }
           $scope.hashtags2 = tag_size2;
         }
+        $('.loader').hide();
         $scope.$apply();
       }
     });
@@ -144,15 +157,14 @@ function Hashtag(textapi){
 });
 
 /****************************************************************
-KEYWORDS STUFF DOWN BELOW!
+CITAION STUFF DOWN BELOW!
 ****************************************************************/
 
-var myApp = angular.module('HashtagSuggestion', ['ngRoute']);
-myApp.controller("HashtagController", function ($scope) {
+var myApp = angular.module('CitationCreation', ['ngRoute']);
+myApp.controller('CitationController', function ($scope) {
 
 var textapi;
 var URL;
-var flag = false;
 
 $( document ).ready(function() {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
@@ -172,68 +184,13 @@ $( document ).ready(function() {
 $(document).ready(function () {
   $(".nav li").removeClass("active");//this will remove the active class from
                                      //previously active menu item
-  $('#tag').addClass('active');
+  $('#cite').addClass('active');
 });
 
-$('#add_tag').click(function(){
-  flag = true;
-  Hashtag(textapi);
-});
-
-function Hashtag(textapi){
-  textapi.hashtags({
-    url: URL
-    },function(error, response) {
-      if (error === null) {
-        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, {'text':response.hashtags});
-      });
-        for(var i = 0; i < tag_size.length; i++){
-          tag_size[i] = response.hashtags[i];
-        }
-        $scope.hashtags = tag_size;
-        if(flag == true){
-          for(var i = 0; i < tag_size2.length; i++){
-            tag_size2[i] = response.hashtags[i+10];
-          }
-          $scope.hashtags2 = tag_size2;
-        }
-        $scope.$apply();
-      }
-    });
-  }
-});
-
-
-/****************************************************************
-CITAION STUFF DOWN BELOW!
-****************************************************************/
-
-var myApp = angular.module('CitaionCreation', ['ngRoute']);
-myApp.controller('CitaionController', function ($scope) {
-
-var textapi;
-var URL;
-
-$( document ).ready(function() {
-  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-  chrome.tabs.sendMessage(tabs[0].id, {'command': 'getURL'}, function(response) {
-      URL = response;
-      var AYLIENTextAPI = require('aylien_textapi');
-      textapi = new AYLIENTextAPI({
-        application_id: APPLICATION_ID,
-        application_key: APPLICATION_KEY
-      });
-      //Add function calls below
-
-    });
-  });
-});
-
-function Hashtag(textapi){
-  textapi.summarize({
+function citation(textapi){
+  textapi.extract({
     url: URL,
-    sentences_number: val
+    best_image: true
     },function(error, response) {
       if (error === null) {
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
@@ -244,4 +201,18 @@ function Hashtag(textapi){
       }
     });
   }
+});
+
+/****************************************************************
+HOWTO PAGE STUFF DOWN BELOW!
+****************************************************************/
+
+var myApp = angular.module('HowToPage', ['ngRoute']);
+myApp.controller('HowToController', function($scope){
+
+  $(document).ready(function () {
+    $(".nav li").removeClass("active");//this will remove the active class from
+                                       //previously active menu item
+    $('#how').addClass('active');
+  });
 });
