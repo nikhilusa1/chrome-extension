@@ -6,14 +6,14 @@
   "version": "1.0",
 
   "browser_action": {
-    "default_icon": "blah1.png",
+    "default_icon": "new.png",
     "default_popup": "popup.html"
   },
   "background": {
    "scripts": ["bundle.js"]
  },
   "icons": {
-    "64" : "blah1.png"
+    "64" : "new.png"
   },
     "content_scripts" : [
     {
