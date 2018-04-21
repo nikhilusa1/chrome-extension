@@ -165,6 +165,8 @@ myApp.controller('CitationController', function ($scope) {
 
 var textapi;
 var URL;
+var webtitle;
+var author_name;
 
 $( document ).ready(function() {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
@@ -176,7 +178,7 @@ $( document ).ready(function() {
         application_key: APPLICATION_KEY
       });
       //Add function calls below
-
+      citation(textapi);
     });
   });
 });
@@ -189,18 +191,44 @@ $(document).ready(function () {
 
 function citation(textapi){
   textapi.extract({
-    url: URL,
-    best_image: true
+    url: URL
     },function(error, response) {
+      var first_name;
+      var last_name;
+      var date;
+      var cites;
       if (error === null) {
-        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, {'text':response.sentences});
-      });
-        $scope.sentences = response.sentences;
+        if(response.author == ''){
+          author_name = "Cannot extract author name.";
+        }
+        else{
+          author_name = response.author;
+          last_name = author_name.substr(author_name.indexOf(' ')+1);
+          first_name = author_name.substr(0,author_name.indexOf(' '));
+        }
+        if(response.publishDate == ''){
+          date = "Cannot extract publication date.";
+          cites = "Unable to cite this article/page."
+        }
+        else{
+          date = parseDate(response.publishDate);
+          webtitle = URL.substr(URL.indexOf("//")+2, URL.indexOf(".c")-8);
+          cites = last_name + "," + first_name + ".\"" + response.title + "\"" + webtitle + ","
+          + parseDate(response.publishDate) + "," + URL.substr(URL.indexOf("//")+2) + ".";
+        }
+        $scope.author = author_name;
+        $scope.pub_date = date;
+        $scope.cite = cites;
+        $scope.show = true;
         $scope.$apply();
       }
     });
   }
+
+  function parseDate(date){
+    return date.slice(0,10);
+  }
+
 });
 
 /****************************************************************
@@ -215,4 +243,64 @@ myApp.controller('HowToController', function($scope){
                                        //previously active menu item
     $('#how').addClass('active');
   });
+});
+
+/****************************************************************
+KEYWORDS STUFF DOWN BELOW!
+****************************************************************/
+var myApp = angular.module('KeywordsGen', ['ngRoute']);
+myApp.controller('KeywordsController', function ($scope) {
+
+  var textapi;
+  var URL;
+  var article;
+
+  $( document ).ready(function() {
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    chrome.tabs.sendMessage(tabs[0].id, {'command': 'getURL'}, function(response) {
+        URL = response;
+        var AYLIENTextAPI = require('aylien_textapi');
+        textapi = new AYLIENTextAPI({
+          application_id: APPLICATION_ID,
+          application_key: APPLICATION_KEY
+        });
+        //Add function calls below
+        $('.table').hide();
+        getText(textapi);
+      });
+    });
+  });
+
+  $(document).ready(function () {
+    $(".nav li").removeClass("active");//this will remove the active class from
+                                       //previously active menu item
+    $('#keywords').addClass('active');
+  });
+
+  function getText(textapi){
+    textapi.extract({
+      url: URL
+      },function(error, response) {
+        if (error === null) {
+          getkeywords(response.article);
+        }
+      });
+    }
+
+  function getkeywords(text){
+    textapi.entities({
+      text:text
+      },function(error, response) {
+        if (error === null) {
+          $scope.keywords = response.entities.keyword;
+          $scope.locations = response.entities.location;
+          $scope.organizations = response.entities.organization;
+          $scope.persons = response.entities.person;
+          $scope.wikiLink = 'https://www.wikipedia.org/wiki/';
+          $('.loader').hide();
+          $('.table').show();
+          $scope.$apply();
+        }
+      });
+    }
 });
