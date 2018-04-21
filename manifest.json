@@ -1,24 +1,29 @@
 {
   "manifest_version": 2,
 
-  "name": "Senior Project",
-  "description": "Hello",
+  "name": "Condense the Web!",
+  "description": "Extension Performing text based analysis through Aylien API",
   "version": "1.0",
 
   "browser_action": {
-    "default_icon": "get_started48.png",
+    "default_icon": "blah1.png",
     "default_popup": "popup.html"
   },
   "background": {
-    "scripts": ["bundle.js"]
-  },
+   "scripts": ["bundle.js"]
+ },
   "icons": {
-    "64" : "get_started48.png"
+    "64" : "blah1.png"
   },
     "content_scripts" : [
     {
       "matches": ["<all_urls>"],
       "js": ["myScript.js"]
     }
+  ],
+  "permissions": [
+  "tabs",
+  "<all_urls>",
+  "storage"
   ]
 }
