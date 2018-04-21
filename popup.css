@@ -1,10 +1,12 @@
 #main_container{
   width: 600px;
-  min-width: 400px
+  min-width: 400px;
+  resize: horizontal;
+  overflow: auto;
 }
 
 #insert{
-  width: 500px;
+  width: 400px;
   min-width: 300px
 }
 
