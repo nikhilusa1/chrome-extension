@@ -8595,7 +8595,12 @@ function citation(textapi){
         }
         else{
           date = parseDate(response.publishDate);
-          webtitle = URL.substr(URL.indexOf("//")+2, URL.indexOf(".c")-8);
+          if(URL[11] == '.'){
+            webtitle = URL.substr(URL.indexOf("ww.")+3, URL.indexOf(".c")-2);;
+          }
+          else{
+            webtitle = URL.substr(URL.indexOf("//")+2, URL.indexOf(".c")-8);
+          }
           cites = last_name + "," + first_name + ".\"" + response.title + "\"" + webtitle + ","
           + parseDate(response.publishDate) + "," + URL.substr(URL.indexOf("//")+2) + ".";
         }
